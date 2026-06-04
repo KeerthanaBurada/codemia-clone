@@ -1,21 +1,14 @@
-export const config = {
-  runtime: "edge",
-};
-
 const NIM_API_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
 
-export default async function handler(req) {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return new Response(
-      JSON.stringify({
-        error: "Method not allowed",
-      }),
-      { status: 405 },
-    );
+    return res.status(405).json({
+      error: "Method not allowed",
+    });
   }
 
   try {
-    const body = await req.json();
+    const body = req.body;
 
     const response = await fetch(NIM_API_URL, {
       method: "POST",
@@ -28,18 +21,12 @@ export default async function handler(req) {
 
     const data = await response.json();
 
-    return new Response(JSON.stringify(data), {
-      status: response.status,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return res.status(response.status).json(data);
   } catch (err) {
-    return new Response(
-      JSON.stringify({
-        error: String(err),
-      }),
-      { status: 500 },
-    );
+    console.error(err);
+
+    return res.status(500).json({
+      error: err.message,
+    });
   }
 }
