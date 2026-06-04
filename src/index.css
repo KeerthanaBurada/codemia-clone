@@ -1,0 +1,8 @@
+@import "tailwindcss";
+.react-flow__node {
+  color: black;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  padding: 10px;
+  background: white;
+}
